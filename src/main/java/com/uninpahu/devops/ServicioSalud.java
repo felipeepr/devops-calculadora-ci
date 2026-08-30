@@ -6,7 +6,7 @@ import java.net.InetSocketAddress;
 public class ServicioSalud {
     public static void iniciar() throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
-        server.createContext("/salud-rota", ex -> {
+        server.createContext("/salud", ex -> {
             byte[] r = "OK".getBytes();
             ex.sendResponseHeaders(200, r.length);
             ex.getResponseBody().write(r);
