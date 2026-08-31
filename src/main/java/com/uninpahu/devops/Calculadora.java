@@ -9,7 +9,7 @@ package com.uninpahu.devops;
 public class Calculadora {
 
     public int sumar(int a, int b) {
-        return a + b;
+        return a + c;
     }
 
     public int restar(int a, int b) {
