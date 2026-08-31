@@ -42,6 +42,7 @@ public class Calculadora {
     /**
      * Calcula la potencia de base elevada a exponente.
      * Taller 3 - nueva funcionalidad para validar CD.
+     * Ejecute Cambio de C a B
      */
     public long potencia(int base, int exponente) {
         if (exponente < 0) {
