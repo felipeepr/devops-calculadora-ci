@@ -1,4 +1,3 @@
-```groovy
 // Laboratorio DevOps - UNINPAHU - Semana 2
 // Pipeline declarativo: Checkout (GitHub) -> Build -> Test -> Package
 
@@ -69,4 +68,3 @@ pipeline {
         }
     }
 }
-```
