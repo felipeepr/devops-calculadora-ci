@@ -67,7 +67,6 @@ pipeline {
                 echo 'Verificando salud del despliegue...'
                 sh 'sleep 8'
                 sh 'curl -f http://localhost:8081/salud || curl -f http://host.docker.internal:8081/salud'
->>>>>>> cb9652e (feat: CD Clase 3 - Build Image Deploy Health Check)
             }
         }
     }
