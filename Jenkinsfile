@@ -43,11 +43,9 @@ pipeline {
             steps {
                 echo 'Empaquetando JAR...'
                 sh 'mvn -B package -DskipTests'
-<<<<<<< HEAD
 
                 archiveArtifacts artifacts: 'target/*.jar',
                                  fingerprint: true
-=======
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
