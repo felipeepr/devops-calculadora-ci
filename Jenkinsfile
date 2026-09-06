@@ -3,17 +3,21 @@
 
 pipeline {
     agent any
+
     tools {
         maven 'Maven-3.9'
     }
+
     options {
         skipDefaultCheckout(true)
         timestamps()
         disableConcurrentBuilds()
     }
+
     triggers {
         pollSCM('H/5 * * * *')
     }
+
     stages {
         stage('Checkout') {
             steps {
@@ -21,12 +25,14 @@ pipeline {
                 checkout scm
             }
         }
+
         stage('Build') {
             steps {
                 echo 'Compilando...'
                 sh 'mvn -B clean compile'
             }
         }
+
         stage('Test') {
             steps {
                 echo 'Ejecutando pruebas...'
@@ -39,22 +45,22 @@ pipeline {
                 }
             }
         }
+
         stage('Package') {
             steps {
                 echo 'Empaquetando JAR...'
                 sh 'mvn -B package -DskipTests'
-
-                archiveArtifacts artifacts: 'target/*.jar',
-                                 fingerprint: true
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
+
         stage('Build Image') {
             steps {
                 echo 'Construyendo imagen Docker...'
                 sh "docker build -t calculadora-ci:${env.BUILD_NUMBER} ."
             }
         }
+
         stage('Deploy') {
             steps {
                 echo 'Desplegando contenedor...'
@@ -62,6 +68,7 @@ pipeline {
                 sh "docker run -d --name calculadora-app -p 8081:8080 calculadora-ci:${env.BUILD_NUMBER}"
             }
         }
+
         stage('Health Check') {
             steps {
                 echo 'Verificando salud del despliegue...'
@@ -70,10 +77,12 @@ pipeline {
             }
         }
     }
+
     post {
         success {
             echo 'Pipeline finalizado correctamente - 7 etapas en verde.'
         }
+
         failure {
             echo 'Pipeline falló. Revisa Stage View y Console Output.'
         }
