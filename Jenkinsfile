@@ -32,6 +32,7 @@ pipeline {
                 echo 'Ejecutando pruebas...'
                 sh 'mvn -B test'
             }
+
             post {
                 always {
                     junit 'target/surefire-reports/*.xml'
@@ -42,6 +43,7 @@ pipeline {
             steps {
                 echo 'Empaquetando JAR...'
                 sh 'mvn -B package -DskipTests'
+<<<<<<< HEAD
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
@@ -63,6 +65,11 @@ pipeline {
                 echo 'Verificando salud del despliegue...'
                 sh 'sleep 8'
                 sh 'curl -f http://localhost:8081/salud || curl -f http://host.docker.internal:8081/salud'
+=======
+
+                archiveArtifacts artifacts: 'target/*.jar',
+                                 fingerprint: true
+>>>>>>> bc470372978cbeeddffc1c1759be091578950bd4
             }
         }
     }
