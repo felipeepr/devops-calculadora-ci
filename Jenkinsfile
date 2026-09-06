@@ -1,42 +1,35 @@
-// Laboratorio DevOps - UNINPAHU - Semana 2
-// Pipeline declarativo: Checkout (GitHub) -> Build -> Test -> Package
+// Laboratorio DevOps - UNINPAHU - Semanas 5 y 6
+// Pipeline: Checkout -> Build -> Test -> Package -> Build Image -> Deploy -> Health Check
 
 pipeline {
     agent any
-
     tools {
         maven 'Maven-3.9'
     }
-
     options {
         skipDefaultCheckout(true)
         timestamps()
         disableConcurrentBuilds()
     }
-
     triggers {
-        // Jenkins revisa GitHub cada 5 minutos buscando nuevos commits.
         pollSCM('H/5 * * * *')
     }
-
     stages {
         stage('Checkout') {
             steps {
-                echo 'Clonando repositorio público desde GitHub...'
+                echo 'Clonando repositorio...'
                 checkout scm
             }
         }
-
         stage('Build') {
             steps {
-                echo 'Compilando el proyecto...'
+                echo 'Compilando...'
                 sh 'mvn -B clean compile'
             }
         }
-
         stage('Test') {
             steps {
-                echo 'Ejecutando pruebas unitarias con JUnit...'
+                echo 'Ejecutando pruebas...'
                 sh 'mvn -B test'
             }
 
@@ -46,25 +39,46 @@ pipeline {
                 }
             }
         }
-
         stage('Package') {
             steps {
-                echo 'Empaquetando el archivo JAR...'
+                echo 'Empaquetando JAR...'
                 sh 'mvn -B package -DskipTests'
+<<<<<<< HEAD
 
                 archiveArtifacts artifacts: 'target/*.jar',
                                  fingerprint: true
+=======
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            }
+        }
+        stage('Build Image') {
+            steps {
+                echo 'Construyendo imagen Docker...'
+                sh "docker build -t calculadora-ci:${env.BUILD_NUMBER} ."
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Desplegando contenedor...'
+                sh 'docker rm -f calculadora-app || true'
+                sh "docker run -d --name calculadora-app -p 8081:8080 calculadora-ci:${env.BUILD_NUMBER}"
+            }
+        }
+        stage('Health Check') {
+            steps {
+                echo 'Verificando salud del despliegue...'
+                sh 'sleep 8'
+                sh 'curl -f http://localhost:8081/salud || curl -f http://host.docker.internal:8081/salud'
+>>>>>>> cb9652e (feat: CD Clase 3 - Build Image Deploy Health Check)
             }
         }
     }
-
     post {
         success {
-            echo 'Pipeline finalizado correctamente.'
+            echo 'Pipeline finalizado correctamente - 7 etapas en verde.'
         }
-
         failure {
-            echo 'El pipeline falló. Revisa la consola y el reporte de pruebas.'
+            echo 'Pipeline falló. Revisa Stage View y Console Output.'
         }
     }
 }
